@@ -1,0 +1,25 @@
+{
+  "name": "Readymade.Persistence",
+  "rootNamespace": "",
+  "references": [
+    "NaughtyAttributes.Core",
+    "Readymade.Patterns",
+    "Readymade.Utils",
+    "Newtonsoft.Json.UnityConverters",
+    "MessagePack",
+    "MessagePack.Annotations",
+    "Unity.TextMeshPro",
+    "UniTask",
+    "UniTask.Linq",
+    "Unity.InputSystem"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
