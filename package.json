@@ -9,6 +9,7 @@
   "changelogUrl": "https://github.com/gerolds/Readymade.Persistence/CHANGELOG.md",
   "licensesUrl": "https://github.com/gerolds/Readymade.Persistence/LICENSE.md",
   "dependencies": {
+    "com.anglebracket.readymade-utils": "0.1.0"
   },
   "keywords": [
     "Persistence"
