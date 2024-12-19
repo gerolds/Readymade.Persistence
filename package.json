@@ -9,7 +9,14 @@
   "changelogUrl": "https://github.com/gerolds/Readymade.Persistence/CHANGELOG.md",
   "licensesUrl": "https://github.com/gerolds/Readymade.Persistence/LICENSE.md",
   "dependencies": {
-    "com.anglebracket.readymade-utils": "0.1.0"
+    "com.anglebracket.readymade-utils": "0.1.0",
+    "com.anglebracket.readymade-machinery": "0.1.0",
+    "com.vertx.debugging": "2.3.0",
+    "com.cysharp.unitask": "2.5.0",
+    "com.neuecc.messagepack": "2.5.140",
+    "com.dbrizov.naughtyattributes": "2.1.0",
+    "com.unity.inputsystem": "1.11.2",
+    "com.unity.ugui": "2.0.0"
   },
   "keywords": [
     "Persistence"
