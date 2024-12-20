@@ -8,7 +8,7 @@ Fundamentally this system can be used like this:
 ```cs
 var _db = new PackDB();
 string dbFilePath = "saves/gamestate";
-_db.Set<bool>("isAwesome", true, dbFilePath");
+_db.Set<bool>("isAwesome", true, dbFilePath);
 var isAwesome = _db.Get<bool>("isAwesome", dbFilePath);
 ```
 
