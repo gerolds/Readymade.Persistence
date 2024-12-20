@@ -6,10 +6,10 @@ A simple and very generic system for game state persistence. Uses a pull-archite
 Fundamentally this system can be used like this:
 
 ```cs
-var x = new PackDB();
+var _db = new PackDB();
 string dbFilePath = "saves/gamestate";
-x.Set<bool>("isAwesome", true, dbFilePath");
-var isAwesome = x.Get<bool>("isAwesome", dbFilePath);
+_db.Set<bool>("isAwesome", true, dbFilePath");
+var isAwesome = _db.Get<bool>("isAwesome", dbFilePath);
 ```
 
 ## Orientation
