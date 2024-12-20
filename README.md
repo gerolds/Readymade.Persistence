@@ -6,7 +6,7 @@ A simple and very generic system for game state persistence. Uses a pull-archite
 Primary entrypoints:
 
 - Implementation of an actual save system: [PackSystem](/Runtime/Components/PackSystem.cs)
-- The backing database: https://github.com/gerolds/Readymade.Persistence/blob/main/Runtime/PackDB.cs
-- The interface used by all packable components: https://github.com/gerolds/Readymade.Persistence/blob/main/Runtime/IPackableComponent.cs
-- An abstract implementation of that packable interface: https://github.com/gerolds/Readymade.Persistence/blob/main/Runtime/Components/PackableComponent.cs
-- The component at the root of all packable objects: https://github.com/gerolds/Readymade.Persistence/blob/main/Runtime/Components/PackIdentity.cs
+- The backing database: [PackDB](/Runtime/PackDB.cs)
+- The interface used by all packable components: [IPackableComponent](/Runtime/IPackableComponent.cs)
+- An abstract implementation of that packable interface: [PackableComponent](/Runtime/Components/PackableComponent.cs)
+- The component at the root of all packable objects: [PackIdentity](/Runtime/Components/PackIdentity.cs)
