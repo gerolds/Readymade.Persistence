@@ -9,6 +9,7 @@ Fundamentally this system can be used like this:
 var _db = new PackDB();
 string dbFilePath = "saves/gamestate";
 _db.Set<bool>("isAwesome", true, dbFilePath);
+_db.Commit();
 var isAwesome = _db.Get<bool>("isAwesome", dbFilePath);
 ```
 
