@@ -894,10 +894,12 @@ namespace Readymade.Persistence
         {
             if (display.Filename && !string.IsNullOrWhiteSpace(display.Filename.text))
             {
+                Debug.Log($"[{nameof(PackSystemPresenter)}] Quick-saving to {display.Filename.text}");
                 _system.SaveVersionAsync(display.Filename.text).Forget();
             }
             else
             {
+                Debug.Log($"[{nameof(PackSystemPresenter)}] Quick-saving.");
                 _system.SaveAsync().Forget();
             }
         }

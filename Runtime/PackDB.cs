@@ -71,6 +71,7 @@ namespace Readymade.Persistence
         public string DataVersion => _packData.Build;
 
         public bool HasUncommittedChanges => _hasUncommittedChanges;
+        public bool IsLocked => _lock.CurrentCount > 0;
 
         /// <inheritdoc />
         public void Set<T>(string key, T data, string path)
@@ -279,6 +280,7 @@ namespace Readymade.Persistence
         /// <inheritdoc />
         public void Commit()
         {
+            Debug.Log($"[{nameof(PackDB)}] Committing database.");
             CommitInternalAsync(Settings.Encryption, Settings.Compression, Settings.Backend).Forget();
         }
 
@@ -557,6 +559,8 @@ namespace Readymade.Persistence
                 return;
             }
 
+            Debug.Log($"[{nameof(PackDB)}] Read lock acquired.");
+
             try
             {
                 var sw = Stopwatch.StartNew();
@@ -629,6 +633,7 @@ namespace Readymade.Persistence
             finally
             {
                 _lock.Release();
+                Debug.Log($"[{nameof(PackDB)}] Read lock released.");
             }
         }
 
@@ -738,6 +743,8 @@ namespace Readymade.Persistence
                     return;
                 }
 
+                Debug.Log($"[{nameof(PackDB)}] Read lock acquired.");
+
                 try
                 {
                     await using (UniTask.ReturnToCurrentSynchronizationContext())
@@ -778,6 +785,7 @@ namespace Readymade.Persistence
                 finally
                 {
                     _lock.Release();
+                    Debug.Log($"[{nameof(PackDB)}] Read lock released.");
                 }
             }
             catch (Exception e)

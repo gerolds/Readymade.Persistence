@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Readymade.Persistence.Components;
 using UnityEngine;
 using UnityEngine.Events;
@@ -316,6 +317,8 @@ namespace Readymade.Persistence
             {
                 EnsureDb();
 
+                var cts = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
+
                 if (debug)
                 {
                     Debug.Log($"[{nameof(PackSystem)}] Unpacking scene {scopedScene.name}...");
@@ -331,6 +334,26 @@ namespace Readymade.Persistence
                 Stopwatch swTotal = Stopwatch.StartNew();
                 var total = sceneObjects.Count;
                 var i = 0;
+
+                // a scene load may overlap with a save operation, we wait for the database to unlock before proceeding.
+                if (_db.IsLocked)
+                {
+                    TimeSpan wait = TimeSpan.FromSeconds(5f);
+                    Debug.LogWarning(
+                        $"[{nameof(PackSystem)}] Database is locked. We'll await an unlock in the next {wait.Seconds} seconds before proceeding.",
+                        this);
+                    await UniTask
+                        .WaitUntil(_db, db => !db.IsLocked, PlayerLoopTiming.Update, cts.Token)
+                        .Timeout(wait, DelayType.DeltaTime, PlayerLoopTiming.Update, cts)
+                        .SuppressCancellationThrow();
+                    if (_db.IsLocked)
+                    {
+                        Debug.LogError(
+                            $"[{nameof(PackSystem)}] Database is locked for more than {wait.Seconds} seconds while loading {scene.name}, skipping scene unpacking. Make sure to unlock the database before attempting to restore objects.",
+                            this);
+                        return;
+                    }
+                }
 
                 // restore existing PackIdentities
 
@@ -440,6 +463,7 @@ namespace Readymade.Persistence
             if (IsAutoActive && Time.time > _nextAutoSaveTime)
             {
                 _nextAutoSaveTime = Time.time + Mathf.Max(autoSaveInterval * 60f, 60f);
+                Debug.Log("Auto-saving ...");
                 SaveVersionAsync(_autoSaveBaseName).Forget();
             }
         }
@@ -1204,7 +1228,12 @@ namespace Readymade.Persistence
 #else
         [Button(enabledMode: EButtonEnableMode.Playmode)]
 #endif
-        public void Save() => SaveAsync().Forget();
+        public void Save()
+        {
+            Debug.Log($"[{nameof(PackSystem)}] Saving.", this);
+            SaveAsync().Forget();
+        }
+
 
         /// <summary>
         /// Collects and saves the configured scope using the default configuration.
@@ -1323,6 +1352,7 @@ namespace Readymade.Persistence
                 }
 
                 OnSave();
+                Debug.Log($"[{nameof(PackDB)}] Committing database.");
                 await _db.CommitAsync();
 
                 PushAutoSaveTimer();
@@ -1345,7 +1375,8 @@ namespace Readymade.Persistence
                 var stopwatch = Stopwatch.StartNew();
                 foreach (PackIdentity packIdentity in packScopes)
                 {
-                    Debug.Assert(packIdentity.Policy != PackIdentity.PackingPolicy.Ghost, "packIdentity.Policy != PackIdentity.PackingPolicy.Ghost");
+                    Debug.Assert(packIdentity.Policy != PackIdentity.PackingPolicy.Ghost,
+                        "packIdentity.Policy != PackIdentity.PackingPolicy.Ghost");
                     PackGameObject(packIdentity, db, scopedPath, keys);
                     if (stopwatch.ElapsedMilliseconds > 50)
                     {
@@ -1456,6 +1487,7 @@ namespace Readymade.Persistence
                 _selectedDatabasePath);
 
             OnSave();
+            Debug.Log($"[{nameof(PackDB)}] Committing database.");
             await _db.CommitAsync();
 
             PushAutoSaveTimer();
